@@ -101,6 +101,9 @@ unittest
 	immutable a = Vector(3, 4, 0.5);
 	auto b = Vector(5, -1, 2);
 
+	writeln;
+	writeln("Unit test in " ~ __MODULE__ ~ ":");
+
 	writeln("a = ", a);
 	writeln("b = ", b);
 	writeln("a + b = ", a + b);
@@ -112,4 +115,6 @@ unittest
 	writeln("+a = ", +a);
 	writeln("-a = ", -a);
 	writeln("*a = ", *a);
+
+	writeln;
 }

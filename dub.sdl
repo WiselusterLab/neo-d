@@ -1,0 +1,5 @@
+name "neo-d"
+descrption "An extension library for D."
+authors "Wiseluster <chinaware@foxmail.com>"
+license "LGPL-3.0"
+targetType "library"

@@ -94,7 +94,7 @@ struct Vector
 	}
 }
 
-unittest
+@safe unittest
 {
 	import std.stdio : writeln;
 

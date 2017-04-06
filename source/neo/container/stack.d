@@ -116,7 +116,7 @@ nothrow @nogc @trusted Stack!E makeStack(E)(in E[] values...)
 
     while (!s.empty)
     {
-        writeln(*s.top());
+        writeln(*s.top);
         s.pop();
     }
 }

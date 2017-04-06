@@ -94,7 +94,7 @@ nothrow @nogc @trusted Stack!E makeStack(E)(in E[] values...)
 {
     Stack!E stack = void;
 
-	stack._top = null;
+    stack._top = null;
     stack._size = values.length;
 
     foreach (value; values)

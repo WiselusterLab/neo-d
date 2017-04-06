@@ -98,7 +98,7 @@ struct Stack(E)
     foreach (i; 0 .. 10)
         s.push(i);
 
-	writeln(s.size);
+    writeln(s.size);
 
     while (!s.empty)
     {

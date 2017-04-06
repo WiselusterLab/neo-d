@@ -41,14 +41,20 @@ struct Stack(E)
     {
         _top = new Node(_top.value, _top.next);
 
-        for (auto node = _top; node.next; node = node.next)
+        for (Node* node = _top; node.next; node = node.next)
             node.next = new Node(node.next.value, node.next.next);
     }
 
-    nothrow @nogc @safe ~this()
+    nothrow @nogc @trusted ~this()
     {
+        Node* node = void;
+
         while (_top)
-            uncheckedPop();
+        {
+            node = _top;
+            delete node;
+            _top = _top.next;
+        }
     }
 
     @property nothrow @nogc @safe const bool empty()
@@ -71,7 +77,9 @@ struct Stack(E)
         if (!_top)
             return;
  
-        uncheckedPop();
+        Node* node = _top;
+        _top = _top.next;
+        delete node;
         --_size;
     }
 
@@ -80,22 +88,28 @@ struct Stack(E)
         _top = new Node(value, _top);
         ++_size;
     }
+}
 
-    private nothrow @nogc @safe void uncheckedPop()
-    {
-        auto node = _top;
-        _top = _top.next;
-        delete node;
-    }
+nothrow @nogc @trusted Stack!E makeStack(E)(in E[] values...)
+{
+    Stack!E stack = void;
+
+	stack._top = null;
+    stack._size = values.length;
+
+    foreach (value; values)
+        stack._top = new Stack!E.Node(value, stack._top);
+
+    return stack;
 }
 
 @safe unittest
 {
     import std.stdio : writeln;
 
-    Stack!int s;
+    auto s = makeStack!int(0, 1);
 
-    foreach (i; 0 .. 10)
+    foreach (i; 2 .. 10)
         s.push(i);
 
     writeln(s.size);

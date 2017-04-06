@@ -1,4 +1,4 @@
-module neo.util.datetime;
+module neo.time.datetime;
 
 struct DateTime
 {

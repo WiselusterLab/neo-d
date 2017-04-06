@@ -52,8 +52,8 @@ struct Stack(E)
         while (_top)
         {
             node = _top;
-            delete node;
             _top = _top.next;
+            delete node;
         }
     }
 

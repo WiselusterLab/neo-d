@@ -37,6 +37,14 @@ struct Stack(E)
 
     @disable this(Node*, size_t);
 
+    nothrow @nogc @safe this(in E[] values...)
+    {
+        _size = values.length;
+
+        foreach (value; values)
+            push(value);
+    }
+
     nothrow @nogc @safe this(this)
     {
         _top = new Node(_top.value, _top.next);
@@ -45,21 +53,14 @@ struct Stack(E)
             node.next = new Node(node.next.value, node.next.next);
     }
 
-    nothrow @nogc @trusted ~this()
+    nothrow @nogc @safe ~this()
     {
-        Node* node = void;
-
-        while (_top)
-        {
-            node = _top;
-            _top = _top.next;
-            delete node;
-        }
+        clear();
     }
 
     @property nothrow @nogc @safe const bool empty()
     {
-        return !_top;
+        return !_top || !_size;
     }
 
     @property nothrow @nogc @safe const size_t size()
@@ -69,14 +70,20 @@ struct Stack(E)
 
     @property nothrow @nogc @safe inout inout(E)* top()
     {
-        return _top ? &_top.value : null;
+        return empty ? null : &_top.value;
+    }
+
+    nothrow @nogc @safe void clear()
+    {
+        while (!empty)
+            pop();
     }
 
     nothrow @nogc @safe void pop()
     {
-        if (!_top)
+        if (empty)
             return;
- 
+
         Node* node = _top;
         _top = _top.next;
         delete node;
@@ -90,24 +97,11 @@ struct Stack(E)
     }
 }
 
-nothrow @nogc @trusted Stack!E makeStack(E)(in E[] values...)
-{
-    Stack!E stack = void;
-
-    stack._top = null;
-    stack._size = values.length;
-
-    foreach (value; values)
-        stack._top = new Stack!E.Node(value, stack._top);
-
-    return stack;
-}
-
 @safe unittest
 {
     import std.stdio : writeln;
 
-    auto s = makeStack!int(0, 1);
+    auto s = Stack!int(0, 1);
 
     foreach (i; 2 .. 10)
         s.push(i);

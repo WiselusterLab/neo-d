@@ -100,7 +100,6 @@ struct Stack(E)
     {
         Node* node = _top;
         _top = _top.next;
-
         delete node;
     }
 

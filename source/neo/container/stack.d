@@ -17,7 +17,7 @@ struct Stack(E)
             GC.addRange(ptr, sz);
 
             debug (NeoD)
-                fprintf(stderr, "New: <%p>\n", ptr);
+                fprintf(stderr, "New node of " ~ E.stringof ~ ": <%p>\n", ptr);
 
             return ptr;
         }
@@ -28,7 +28,7 @@ struct Stack(E)
             GC.removeRange(ptr);
 
             debug (NeoD)
-                fprintf(stderr, "Delete: <%p>\n", ptr);
+                fprintf(stderr, "Delete node of " ~ E.stringof ~ ": <%p>\n", ptr);
         }
     }
 
@@ -37,7 +37,7 @@ struct Stack(E)
 
     @disable this(Node*, size_t);
 
-    nothrow @nogc @safe this(in E[] values...)
+    nothrow @nogc @safe this(E[] values...)
     {
         _size = values.length;
 
@@ -89,7 +89,7 @@ struct Stack(E)
         --_size;
     }
 
-    nothrow @nogc @safe void push(in E value)
+    nothrow @nogc @safe void push(E value)
     {
         uncountedPush(value);
 
@@ -103,7 +103,7 @@ struct Stack(E)
         delete node;
     }
 
-    private nothrow @nogc @safe void uncountedPush(in E value)
+    private nothrow @nogc @safe void uncountedPush(E value)
     {
         _top = new Node(value, _top);
     }

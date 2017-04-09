@@ -41,16 +41,14 @@ struct Stack(E)
 
     nothrow @nogc @safe this(E[] values...)
     {
-        _size = values.length;
-
         foreach (value; values)
             uncountedPush(value);
+        _size = values.length;
     }
 
     nothrow @nogc @safe this(this)
     {
         _top = new Node(_top.value, _top.next);
-
         for (Node* node = _top; node.next; node = node.next)
             node.next = new Node(node.next.value, node.next.next);
     }
@@ -77,24 +75,26 @@ struct Stack(E)
 
     nothrow @nogc @safe void clear()
     {
+		if (empty)
+			return;
+
         while (!empty)
             uncountedPop();
-
         _size = 0;
     }
 
     nothrow @nogc @safe void pop()
     {
-        if (!empty)
-            uncountedPop();
+        if (empty)
+			return;
 
+        uncountedPop();
         --_size;
     }
 
     nothrow @nogc @safe void push(E value)
     {
         uncountedPush(value);
-
         ++_size;
     }
 

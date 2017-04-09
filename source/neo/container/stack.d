@@ -2,7 +2,9 @@ module neo.container.stack;
 
 import core.memory : GC;
 import core.stdc.stdlib : free, malloc;
-import core.stdc.stdio : fprintf, stderr;
+
+debug (NeoD)
+    import core.stdc.stdio : fprintf, stderr;
 
 struct Stack(E)
 {

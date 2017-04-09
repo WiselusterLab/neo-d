@@ -16,7 +16,7 @@ struct Stack(E)
             void* ptr = malloc(sz);
             GC.addRange(ptr, sz);
 
-            debug
+            debug (NeoD)
                 fprintf(stderr, "New: <%p>\n", ptr);
 
             return ptr;
@@ -27,7 +27,7 @@ struct Stack(E)
             free(ptr);
             GC.removeRange(ptr);
 
-            debug
+            debug (NeoD)
                 fprintf(stderr, "Delete: <%p>\n", ptr);
         }
     }
@@ -42,7 +42,7 @@ struct Stack(E)
         _size = values.length;
 
         foreach (value; values)
-            push(value);
+            uncountedPush(value);
     }
 
     nothrow @nogc @safe this(this)
@@ -76,24 +76,37 @@ struct Stack(E)
     nothrow @nogc @safe void clear()
     {
         while (!empty)
-            pop();
+            uncountedPop();
+
+        _size = 0;
     }
 
     nothrow @nogc @safe void pop()
     {
-        if (empty)
-            return;
+        if (!empty)
+            uncountedPop();
 
-        Node* node = _top;
-        _top = _top.next;
-        delete node;
         --_size;
     }
 
     nothrow @nogc @safe void push(in E value)
     {
-        _top = new Node(value, _top);
+        uncountedPush(value);
+
         ++_size;
+    }
+
+    private nothrow @nogc @safe void uncountedPop()
+    {
+        Node* node = _top;
+        _top = _top.next;
+
+        delete node;
+    }
+
+    private nothrow @nogc @safe void uncountedPush(in E value)
+    {
+        _top = new Node(value, _top);
     }
 }
 
@@ -101,9 +114,11 @@ struct Stack(E)
 {
     import std.stdio : writeln;
 
-    auto s = Stack!int(0, 1);
+    Stack!int s = Stack!int(0, 1);
 
-    foreach (i; 2 .. 10)
+    s.clear();
+
+    foreach (i; 0 .. 10)
         s.push(i);
 
     writeln(s.size);

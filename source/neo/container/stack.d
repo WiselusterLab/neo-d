@@ -75,9 +75,6 @@ struct Stack(E)
 
     nothrow @nogc @safe void clear()
     {
-		if (empty)
-			return;
-
         while (!empty)
             uncountedPop();
         _size = 0;
@@ -86,7 +83,7 @@ struct Stack(E)
     nothrow @nogc @safe void pop()
     {
         if (empty)
-			return;
+            return;
 
         uncountedPop();
         --_size;

@@ -58,17 +58,17 @@ struct Stack(E)
         clear();
     }
 
-    @property nothrow @nogc @safe const bool empty()
+    @property const bool empty()
     {
         return !_top || !_size;
     }
 
-    @property nothrow @nogc @safe const size_t size()
+    @property const size_t size()
     {
         return _size;
     }
 
-    @property nothrow @nogc @safe inout inout(E)* top()
+    @property inout inout(E)* top()
     {
         return empty ? null : &_top.value;
     }
@@ -108,11 +108,16 @@ struct Stack(E)
     }
 }
 
+Stack!E makeStack(E)(E[] values...)
+{
+    return Stack!E(values);
+}
+
 @safe unittest
 {
     import std.stdio : writeln;
 
-    Stack!int s = Stack!int(0, 1);
+    Stack!int s = makeStack(0, 1);
 
     s.clear();
 

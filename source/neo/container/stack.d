@@ -17,10 +17,8 @@ struct Stack(E)
         {
             void* ptr = malloc(sz);
             GC.addRange(ptr, sz);
-
             debug (NeoD)
                 fprintf(stderr, "New node of " ~ E.stringof ~ ": <%p>\n", ptr);
-
             return ptr;
         }
 
@@ -28,7 +26,6 @@ struct Stack(E)
         {
             free(ptr);
             GC.removeRange(ptr);
-
             debug (NeoD)
                 fprintf(stderr, "Delete node of " ~ E.stringof ~ ": <%p>\n", ptr);
         }
@@ -42,7 +39,7 @@ struct Stack(E)
     nothrow @nogc @safe this(E[] values...)
     {
         foreach (value; values)
-            uncountedPush(value);
+            _top = new Node(value, _top);
         _size = values.length;
     }
 
@@ -75,8 +72,13 @@ struct Stack(E)
 
     nothrow @nogc @safe void clear()
     {
+        Node* node = _top;
         while (!empty)
-            uncountedPop();
+        {
+            _top = _top.next;
+            delete node;
+            node = _top;
+        }
         _size = 0;
     }
 
@@ -84,27 +86,16 @@ struct Stack(E)
     {
         if (empty)
             return;
-
-        uncountedPop();
+        Node* node = _top;
+        _top = _top.next;
+        delete node;
         --_size;
     }
 
     nothrow @nogc @safe void push(E value)
     {
-        uncountedPush(value);
-        ++_size;
-    }
-
-    private nothrow @nogc @safe void uncountedPop()
-    {
-        Node* node = _top;
-        _top = _top.next;
-        delete node;
-    }
-
-    private nothrow @nogc @safe void uncountedPush(E value)
-    {
         _top = new Node(value, _top);
+        ++_size;
     }
 }
 
@@ -118,14 +109,10 @@ Stack!E makeStack(E)(E[] values...)
     import std.stdio : writeln;
 
     Stack!int s = makeStack(0, 1);
-
     s.clear();
-
     foreach (i; 0 .. 10)
         s.push(i);
-
     writeln(s.size);
-
     while (!s.empty)
     {
         writeln(*s.top);

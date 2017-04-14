@@ -72,12 +72,12 @@ struct Stack(E)
 
     nothrow @nogc @safe void clear()
     {
-        Node* node = _top;
+        Node* node;
         while (!empty)
         {
+            node = _top;
             _top = _top.next;
             delete node;
-            node = _top;
         }
         _size = 0;
     }
